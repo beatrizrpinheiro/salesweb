@@ -20,11 +20,15 @@ namespace SalesWeb.Controllers
 
         public IActionResult Index()
         {
+
+            
             return View();
         }
 
         public IActionResult Privacy()
         {
+            ViewData["Message"] = "Welcome our website";
+            ViewData["information"] = "This is our contact: beatrizp.gestaoemp@gmail.com";
             return View();
         }
 
