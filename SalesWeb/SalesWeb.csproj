@@ -4,4 +4,15 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Models\NovaPasta1\**" />
+    <Content Remove="Models\NovaPasta1\**" />
+    <EmbeddedResource Remove="Models\NovaPasta1\**" />
+    <None Remove="Models\NovaPasta1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+  </ItemGroup>
+
 </Project>
