@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SalesWeb.Data;
+using SalesWeb.Models;
 using SalesWeb.Services;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,17 @@ namespace SalesWeb.Controllers
             return View(list);
 
         }
-      
+      public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create([Bind] Seller Seller)
+        {
+            _SellerService.Insert(Seller);
+            return RedirectToAction(nameof (Index));
+        }
     }
 }
 
