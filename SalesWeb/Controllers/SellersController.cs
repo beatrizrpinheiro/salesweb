@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SalesWeb.Data;
 using SalesWeb.Models;
+using SalesWeb.Models.ViewModels;
 using SalesWeb.Services;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,12 @@ namespace SalesWeb.Controllers
     public class SellersController : Controller
     {
         private readonly SellerService _SellerService;
-        public SellersController (SellerService sellerservice)
+        private readonly DepartmentService _departmentService;
+        public SellersController (SellerService Sellerservice, DepartmentService departmentService)
         {
-            _SellerService = sellerservice;
+            _SellerService = Sellerservice;
+            _departmentService = departmentService;
+
         }
         public IActionResult Index()
         {
@@ -25,7 +29,9 @@ namespace SalesWeb.Controllers
         }
       public IActionResult Create()
         {
-            return View();
+            var departments = _departmentService.FindAll();
+            var viewModel = new SellerFormViewModel { Departments = departments };
+            return View(viewModel);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
