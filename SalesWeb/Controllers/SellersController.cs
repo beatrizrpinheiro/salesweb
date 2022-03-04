@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SalesWeb.Data;
 using SalesWeb.Models;
 using SalesWeb.Models.ViewModels;
 using SalesWeb.Services;
+using SalesWeb.Services.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 
 namespace SalesWeb.Controllers
@@ -18,7 +15,7 @@ namespace SalesWeb.Controllers
         private readonly DepartmentService _departmentService;
         private object _sellerService;
 
-        public SellersController (SellerService Sellerservice, DepartmentService departmentService)
+        public SellersController(SellerService Sellerservice, DepartmentService departmentService)
         {
             _SellerService = Sellerservice;
             _departmentService = departmentService;
@@ -30,7 +27,7 @@ namespace SalesWeb.Controllers
             return View(list);
 
         }
-      public IActionResult Create()
+        public IActionResult Create()
         {
             var departments = _departmentService.FindAll();
             var viewModel = new SellerFormViewModel { Departments = departments };
@@ -41,16 +38,16 @@ namespace SalesWeb.Controllers
         public IActionResult Create([Bind] Seller Seller)
         {
             _SellerService.Insert(Seller);
-            return RedirectToAction(nameof (Index));
+            return RedirectToAction(nameof(Index));
         }
         public IActionResult Delete(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
             var obj = _SellerService.FindById(id.Value);
-            if(obj == null)
+            if (obj == null)
             {
                 return NotFound();
             }
@@ -78,10 +75,50 @@ namespace SalesWeb.Controllers
             return View(obj);
 
         }
-    }
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var obj = _SellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
 
+            List<Department> departments = _departmentService.FindAll();
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            if (id != seller.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                _SellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DllNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
+        }
+
+    }
 }
 
 
- 
+
+
 
